@@ -7,28 +7,53 @@ public class WheelEngine : MonoBehaviour {
     public WheelCollider leftWheel;
     public WheelCollider rightWheel;
     public float maxPower;
+    private float leftPower;
+    private float rightPower;
+    private Rigidbody body;
 
-    void Update () {
-		if(Input.GetKey(KeyCode.RightArrow))
-        {
-            rightWheel.brakeTorque = 0;
-            rightWheel.motorTorque = maxPower;
-        }
-        else
-        {
-            rightWheel.brakeTorque = Mathf.Infinity;
-            rightWheel.motorTorque = 0;
-        }
+    void Awake()
+    {
+        body = GetComponent<Rigidbody>();
+    }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            leftWheel.motorTorque = maxPower;
-            leftWheel.brakeTorque = 0;
-        }
-        else
+    public void SetEngineValues(float leftWheelPower, float rightWheelPower)
+    {
+        leftWheelPower = Mathf.Min(leftWheelPower, maxPower);
+        rightWheelPower = Mathf.Min(rightWheelPower, maxPower);
+
+        leftPower = leftWheelPower;
+        rightPower = rightWheelPower;
+
+        if (leftWheelPower == 0)
         {
             leftWheel.brakeTorque = Mathf.Infinity;
             leftWheel.motorTorque = 0;
         }
+        else
+        {
+            leftWheel.motorTorque = leftWheelPower;
+            leftWheel.brakeTorque = 0;
+        }
+
+        if(rightWheelPower == 0)
+        {
+            rightWheel.brakeTorque = Mathf.Infinity;
+            rightWheel.motorTorque = 0;
+        }
+        else
+        {
+            rightWheel.motorTorque = rightWheelPower;
+            rightWheel.brakeTorque = 0;
+        }
+    }
+
+    public void StopWheels()
+    {
+        body.velocity = Vector3.zero;
+    }
+
+    public void BreakWheels(float mult)
+    {
+        body.velocity = body.velocity / mult;
     }
 }
