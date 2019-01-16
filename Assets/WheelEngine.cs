@@ -21,6 +21,9 @@ public class WheelEngine : MonoBehaviour {
         leftWheelPower = Mathf.Min(leftWheelPower, maxPower);
         rightWheelPower = Mathf.Min(rightWheelPower, maxPower);
 
+        leftWheelPower = Mathf.Max(leftWheelPower, -maxPower);
+        rightWheelPower = Mathf.Max(rightWheelPower, -maxPower);
+
         leftPower = leftWheelPower;
         rightPower = rightWheelPower;
 
