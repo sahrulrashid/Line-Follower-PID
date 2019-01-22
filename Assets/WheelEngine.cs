@@ -6,7 +6,7 @@ public class WheelEngine : MonoBehaviour {
 
     public WheelCollider leftWheel;
     public WheelCollider rightWheel;
-    public float maxPower;
+    public float maxTorque;
     private float leftPower;
     private float rightPower;
     private Rigidbody body;
@@ -18,11 +18,11 @@ public class WheelEngine : MonoBehaviour {
 
     public void SetEngineValues(float leftWheelPower, float rightWheelPower)
     {
-        leftWheelPower = Mathf.Min(leftWheelPower, maxPower);
-        rightWheelPower = Mathf.Min(rightWheelPower, maxPower);
+        leftWheelPower = Mathf.Min(leftWheelPower, maxTorque);
+        rightWheelPower = Mathf.Min(rightWheelPower, maxTorque);
 
-        leftWheelPower = Mathf.Max(leftWheelPower, -maxPower);
-        rightWheelPower = Mathf.Max(rightWheelPower, -maxPower);
+        leftWheelPower = Mathf.Max(leftWheelPower, -maxTorque);
+        rightWheelPower = Mathf.Max(rightWheelPower, -maxTorque);
 
         leftPower = leftWheelPower;
         rightPower = rightWheelPower;

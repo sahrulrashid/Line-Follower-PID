@@ -14,7 +14,7 @@ public class PID : MonoBehaviour {
     public SensorChip sensorChip;
 
     [Header("PID")]
-    public float setVelocity;
+    public float setTorque;
     public float Kp;
     public float Ki;
     public float Kd;
@@ -22,18 +22,44 @@ public class PID : MonoBehaviour {
     public int sensorWeight = 15;
     public float breakOvershoot = 4.0f;
 
+    [Header("Statistics")]
+    public float totalTime;
+    public List<int> errorTable;
+    public List<float> timeTable;
+
     private int error;
     private int prevError;
     private int prevCalcError;
-    private int errorSum;
+    private float errorSum;
     private Overshoot overshoot;
     private Sensor[] sensors;
+
+    void Start()
+    {
+        errorTable = new List<int>();
+        timeTable = new List<float>();
+    }
 
     void FixedUpdate () {
         sensors = sensorChip.GetSensors();
         StepPID();
+        totalTime += Time.fixedDeltaTime;
+        errorTable.Add(error);
+        timeTable.Add(totalTime);
 	}
 
+    public void Reset()
+    {
+        engine.SetEngineValues(0.0f, 0.0f);
+        engine.BreakWheels(Mathf.Infinity);
+        prevError = 0;
+        error = 0;
+        prevCalcError = 0;
+        errorSum = 0.0f;
+        totalTime = 0.0f;
+        errorTable = new List<int>();
+        timeTable = new List<float>();
+    }
 
     private int CalcError()
     {
@@ -81,10 +107,11 @@ public class PID : MonoBehaviour {
     private void StepPID()
     {
         error = CalcError();
-        float errorDerivative = error - prevError;
-        errorSum += Mathf.Abs(error);
-        float pid = Kp * error + Kd * errorDerivative;
-        engine.SetEngineValues(setVelocity - pid, setVelocity + pid);
+        float errorDerivative = (error - prevError)/Time.fixedDeltaTime;
+        errorSum += error * Time.fixedDeltaTime;
+        float pid = Kp * error + Ki * errorSum + Kd * errorDerivative;
+        engine.SetEngineValues(setTorque - pid, setTorque + pid);
         prevError = error;
     }
+
 }

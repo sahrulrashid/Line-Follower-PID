@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.IO;
+
 public class UItoPID : MonoBehaviour {
 
     [SerializeField]
@@ -28,35 +30,39 @@ public class UItoPID : MonoBehaviour {
     [SerializeField]
     private TMP_InputField maxEnginePower;
 
-    private float startKp;
-    private float startKi;
-    private float startKd;
-    private float startSetValue;
-    private int startOverError;
-    private float startOverBreak;
-    private float startMaxEnginePower;
+    private Vector3 startLineFollowerPosition;
+    private Quaternion startLineFollowerRotation;
+
+    bool wasSaved = false;
 
     void Start()
     {
-        startKp = pid.Kp;
-        startKi = pid.Ki;
-        startKd = pid.Kd;
-        startSetValue = pid.setVelocity;
-        startOverError = pid.errorWhenOverShoot;
-        startOverBreak = pid.breakOvershoot;
-        startMaxEnginePower = pid.engine.maxPower;
+        startLineFollowerPosition = pid.transform.position;
+        startLineFollowerRotation = pid.transform.rotation;
         UpdateUI();
+    }
+
+    void FixedUpdate()
+    {
+        if(!wasSaved && pid.totalTime >= 60.0)
+        {
+            SaveToFile();
+            wasSaved = true;
+        }
+    }
+
+    public void StartPID()
+    {
+        pid.enabled = true;
     }
 
     public void ResetPID()
     {
-        pid.Kp = startKp;
-        pid.Ki = startKi;
-        pid.Kd = startKd;
-        pid.setVelocity = startSetValue;
-        pid.errorWhenOverShoot = startOverError;
-        pid.breakOvershoot = startOverBreak;
-        pid.engine.maxPower = startMaxEnginePower;
+        pid.transform.position = startLineFollowerPosition;
+        pid.transform.rotation = startLineFollowerRotation;
+        pid.Reset();
+        pid.enabled = false;
+        wasSaved = false;
         UpdateUI();
     }
 
@@ -65,10 +71,10 @@ public class UItoPID : MonoBehaviour {
         Kp.text = pid.Kp.ToString();
         Ki.text = pid.Ki.ToString();
         Kd.text = pid.Kd.ToString();
-        setValue.text = pid.setVelocity.ToString();
+        setValue.text = pid.setTorque.ToString();
         overError.text = pid.errorWhenOverShoot.ToString();
         overBreak.text = pid.breakOvershoot.ToString();
-        maxEnginePower.text = pid.engine.maxPower.ToString();
+        maxEnginePower.text = pid.engine.maxTorque.ToString();
     }
 
     public void UpdatePID()
@@ -76,10 +82,29 @@ public class UItoPID : MonoBehaviour {
         pid.Kp = float.Parse(Kp.text);
         pid.Ki = float.Parse(Ki.text);
         pid.Kd = float.Parse(Kd.text);
-        pid.setVelocity = float.Parse(setValue.text);
+        pid.setTorque = float.Parse(setValue.text);
         pid.errorWhenOverShoot = int.Parse(overError.text);
         pid.breakOvershoot = float.Parse(overBreak.text);
-        pid.engine.maxPower = float.Parse(maxEnginePower.text);
+        pid.engine.maxTorque = float.Parse(maxEnginePower.text);
+    }
+
+    public void SaveToFile()
+    {
+        List<string> errors = new List<string>();
+        foreach (float e in pid.errorTable)
+            errors.Add(e.ToString());
+
+        File.WriteAllLines(@"error.txt", errors.ToArray());
+
+        List<string> times = new List<string>();
+        foreach (float t in pid.timeTable)
+            times.Add(t.ToString());
+
+        File.WriteAllLines(@"time.txt", times.ToArray());
+
+        string[] parameters = { pid.Kp.ToString(), pid.Ki.ToString(), pid.Kd.ToString() };
+
+        File.WriteAllLines(@"parameters.txt", parameters.ToArray());
     }
 
 }
