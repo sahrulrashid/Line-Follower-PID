@@ -10,7 +10,7 @@ After 60 seconds from unstopped simulation, it saves three files into main folde
     parameters.txt - parameters of Kp, Ki and Kd
     error.txt - PID error values during simulation
     time.txt - time stamps between error calculation
-You can easily plot an error chart with python matplotlib as shown below:
+You can easily plot an error chart using python matplotlib as shown below:
 
 ![alt text](https://github.com/vvrvvd/LineFollowerPID/blob/master/Screenshoots/error.png)
 
