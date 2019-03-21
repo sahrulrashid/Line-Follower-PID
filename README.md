@@ -1,8 +1,7 @@
 # LineFollowerPID
-Simulation of line follower with PID in Unity using my own algorithm for overshoot problem. 
-Robot movement is based on wheel colliders and physics built in Unity.
+# Simulation of line follower with PID in Unity using my own algorithm for overshoot problem.  Robot movement is based on wheel colliders and physics built in Unity.
 
-[Presentation videos and charts(CLICK)](https://www.dropbox.com/sh/n9m6bl9dvuo0i83/AAAwWYt_6QBPf7ynb-Ycgg4Ra?dl=0)
+# [Presentation videos and charts(CLICK)](https://www.dropbox.com/sh/n9m6bl9dvuo0i83/AAAwWYt_6QBPf7ynb-Ycgg4Ra?dl=0)
 
 ![alt text](https://github.com/vvrvvd/LineFollowerPID/blob/master/Screenshoots/line%20follower%20ui.png)
 
