@@ -8,7 +8,7 @@ Robot movement is based on wheel colliders and physics built in Unity.
 
 ![alt text](https://github.com/vvrvvd/LineFollowerPID/blob/master/Screenshoots/race%20route.png)
 
-After 60 seconds from unstopped simulation, it saves three files into main folder:
+After 60 seconds from unstopped simulation, application saves three files into main folder:
     parameters.txt - parameters of Kp, Ki and Kd
     error.txt - PID error values during simulation
     time.txt - time stamps between error calculation
